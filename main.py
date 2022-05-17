@@ -5,6 +5,7 @@ pygame.init()
 
 SCREEN = pygame.display.set_mode((800, 800))
 pygame.display.set_caption("Memory")
+BG = pygame.image.load("assets/tło projekt.png")
 
 def get_font(size):
     return pygame.font.Font(None, size)
@@ -14,7 +15,7 @@ def play():
     while True:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
+        SCREEN.blit(BG, (0, 0))
 
         PLAY_TEXT = get_font(45).render("Wybierz poziom trudności", True, "White")
         PLAY_RECT = PLAY_TEXT.get_rect(center=(400, 50))
@@ -54,7 +55,7 @@ def options():
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
+        SCREEN.blit(BG, (0, 0))
 
         OPTIONS_TEXT = get_font(45).render("Opcje", True, "white")
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(400, 50))
@@ -79,7 +80,7 @@ def options():
 
 def main_menu():
     while True:
-        SCREEN.fill("black")
+        SCREEN.blit(BG, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
