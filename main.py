@@ -6,6 +6,7 @@ pygame.init()
 SCREEN = pygame.display.set_mode((800, 800))
 pygame.display.set_caption("Memory")
 BG = pygame.image.load("assets/tło projekt.png")
+GAME_BG = pygame.image.load("assets/gameplay.png")
 
 
 def get_font(size):
@@ -13,6 +14,7 @@ def get_font(size):
 
 
 def game(mode, lang):
+
     if mode == 3 and lang == 1:
         file = open("words/polish_hard.txt")
     elif mode == 2 and lang == 1:
@@ -29,6 +31,17 @@ def game(mode, lang):
     for line in file:
         words.append(line)
 
+    while True:
+        GAME_MOUSE_POS = pygame.mouse.get_pos()
+        SCREEN.blit(GAME_BG, (0, 0))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        pygame.display.update()
+
 
 def play(lang):
     while True:
@@ -39,15 +52,14 @@ def play(lang):
         PLAY_RECT = PLAY_TEXT.get_rect(center=(400, 50))
         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
-
-        PLAY_MEDIUM = Button(image=pygame.image.load("assets/button.png"), pos =(400, 350),
-                           text_input="Średni", font=get_font(75), base_color="White", hovering_color="Green")
-        PLAY_HARD = Button(image=pygame.image.load("assets/button.png"), pos =(400, 550),
-                           text_input="Trudny", font=get_font(75), base_color="White", hovering_color="Green")
-        PLAY_BACK = Button(image=None, pos=(400, 750),
-                           text_input="WRÓĆ", font=get_font(75), base_color="White", hovering_color="Green")
-        PLAY_EASY = Button(image=pygame.image.load("assets/button.png"), pos =(400, 150),
+        PLAY_EASY = Button(image=pygame.image.load("assets/przycisk.png"), pos =(100, 250),
                            text_input="Łatwy", font=get_font(75), base_color="White", hovering_color="Green")
+        PLAY_MEDIUM = Button(image=pygame.image.load("assets/przycisk.png"), pos =(100, 400),
+                           text_input="Średni", font=get_font(75), base_color="White", hovering_color="Green")
+        PLAY_HARD = Button(image=pygame.image.load("assets/przycisk.png"), pos =(100, 550),
+                           text_input="Trudny", font=get_font(75), base_color="White", hovering_color="Green")
+        PLAY_BACK = Button(image=pygame.image.load("assets/przycisk.png"), pos=(100, 700),
+                           text_input="WRÓĆ", font=get_font(75), base_color="White", hovering_color="Green")
 
         PLAY_EASY.changeColor(PLAY_MOUSE_POS)
         PLAY_EASY.update(SCREEN)
@@ -57,7 +69,6 @@ def play(lang):
         PLAY_HARD.update(SCREEN)
         PLAY_BACK.changeColor(PLAY_MOUSE_POS)
         PLAY_BACK.update(SCREEN)
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -96,9 +107,9 @@ def options():
         OPTIONS_BACK = Button(image=None, pos=(400, 750),
                               text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
         OPTIONS_POL = Button(image=pygame.image.load("assets/button.png"), pos =(400, 150),
-                           text_input="POL", font=get_font(75), base_color="White", hovering_color="Green")
+                              text_input="POL", font=get_font(75), base_color="White", hovering_color="Green")
         OPTIONS_ANG = Button(image=pygame.image.load("assets/button.png"), pos =(400, 300),
-                           text_input="ANG", font=get_font(75), base_color="White", hovering_color="Green")
+                              text_input="ANG", font=get_font(75), base_color="White", hovering_color="Green")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(SCREEN)
@@ -133,17 +144,12 @@ def main_menu(lang):
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(100).render("MENU", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(400, 100))
-
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/button.png"), pos=(400, 250),
-                             text_input="GRAJ", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/button.png"), pos=(400, 400),
-                                text_input="OPCJE", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/button.png"), pos=(400, 550),
-                             text_input="WYJDŹ", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-
-        SCREEN.blit(MENU_TEXT, MENU_RECT)
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/przycisk.png"), pos=(100, 250),
+                             text_input="GRAJ", font=get_font(75), base_color="WHITE", hovering_color="GREEN")
+        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/przycisk.png"), pos=(100, 400),
+                             text_input="OPCJE", font=get_font(75), base_color="WHITE", hovering_color="GREEN")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/przycisk.png"), pos=(100, 550),
+                             text_input="WYJDŹ", font=get_font(75), base_color="WHITE", hovering_color="GREEN")
 
         for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
