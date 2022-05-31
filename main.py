@@ -1,5 +1,9 @@
+import random
+
 import pygame, sys
 from button import Button
+from box import InputBox
+from Modules import pygame_textinput
 
 pygame.init()
 
@@ -14,34 +18,66 @@ def get_font(size):
 
 
 def game(mode, lang):
+    clock = pygame.time.Clock()
+    textinput = pygame_textinput.TextInputVisualizer()
+    number = random.randrange(0, 24)
+    pygame.time.set_timer(pygame.USEREVENT, 1000)
+    points = 0
+    timer = 5
+    dt = 0
 
     if mode == 3 and lang == 1:
-        file = open("words/polish_hard.txt")
+        file = open("words/polish_hard.txt", encoding="utf-8").read().splitlines()
     elif mode == 2 and lang == 1:
-        file = open("words/polish_medium.txt")
+        file = open("words/polish_medium.txt", encoding="utf-8").read().splitlines()
     elif mode == 1 and lang == 1:
-        file = open("words/polish_easy.txt")
+        file = open("words/polish_easy.txt", encoding="utf-8").read().splitlines()
     elif mode == 3 and lang == 2:
-        file = open("words/english_hard.txt")
+        file = open("words/english_hard.txt", encoding="utf-8").read().splitlines()
     elif mode == 2 and lang == 2:
-        file = open("words/english_medium.txt")
+        file = open("words/english_medium.txt", encoding="utf-8").read().splitlines()
     elif mode == 1 and lang == 2:
-        file = open("words/english_easy.txt")
+        file = open("words/english_easy.txt", encoding="utf-8").read().splitlines()
     words = []
     for line in file:
         words.append(line)
 
+    SCREEN.blit(GAME_BG, (0, 0))
     while True:
         GAME_MOUSE_POS = pygame.mouse.get_pos()
-        SCREEN.blit(GAME_BG, (0, 0))
+        base_font = pygame.font.Font(None, 50)
+        events = pygame.event.get()
+        textinput.update(events)
+        text_surface_out = base_font.render(words[number], True, (0, 0, 0))
+        points_surface_out = base_font.render(str(points), True, (0, 0, 0))
 
-        for event in pygame.event.get():
+        timer -= dt
+        print(timer)
+
+        SCREEN.blit(GAME_BG, (0, 0))
+        if timer > 0:
+            SCREEN.blit(text_surface_out, (300, 200))
+        if timer < 0:
+            SCREEN.blit(textinput.surface, (300, 600))
+        SCREEN.blit(points_surface_out, (700, 100))
+
+        for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN and timer < 0:
+                if textinput.value == words[number]:
+                    points += 1
+                else:
+                    points = 0
+                timer = 5
+                textinput.value = ''
+                number = random.randrange(0, 24)
+        if timer > 0:
+            textinput.value = ''
 
         pygame.display.update()
-
+        dt = clock.tick(30) / 1000
 
 def play(lang):
     while True:
