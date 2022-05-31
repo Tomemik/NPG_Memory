@@ -2,7 +2,6 @@ import random
 
 import pygame, sys
 from button import Button
-from box import InputBox
 from Modules import pygame_textinput
 
 pygame.init()
