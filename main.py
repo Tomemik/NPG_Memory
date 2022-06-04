@@ -87,21 +87,25 @@ def game(mode, lang):
     SCREEN.blit(GAME_BG, (0, 0))
     while True:
         GAME_MOUSE_POS = pygame.mouse.get_pos()
-        base_font = pygame.font.Font(None, 50)
+        base_font = pygame.font.Font(None, 100)
         events = pygame.event.get()
         textinput.update(events)
         text_surface_out = base_font.render(words[number], True, (0, 0, 0))
+        victory_surface_out = base_font.render("WYGRANA", True, (255, 255, 255))
         points_surface_out = base_font.render(str(points), True, (0, 0, 0))
+        timer_surface_out = base_font.render(str(int(timer)), True, (0, 0, 0))
 
+        SCREEN.blit(GAME_BG, (0, 0))
         timer -= dt
         print(timer)
 
-        SCREEN.blit(GAME_BG, (0, 0))
+
         if timer > 0:
-            SCREEN.blit(text_surface_out, (300, 200))
+            SCREEN.blit(text_surface_out, text_surface_out.get_rect(center=SCREEN.get_rect().center))
+            SCREEN.blit(timer_surface_out, (60, 60))
         if timer < 0:
-            SCREEN.blit(textinput.surface, (300, 600))
-        SCREEN.blit(points_surface_out, (700, 100))
+            SCREEN.blit(textinput.surface, textinput.surface.get_rect(center=SCREEN.get_rect().center))
+        SCREEN.blit(points_surface_out, (700, 60))
 
         for event in events:
             if event.type == pygame.QUIT:
@@ -120,6 +124,11 @@ def game(mode, lang):
                 number = random.randrange(0, 24)
         if timer > 0:
             textinput.value = ''
+        if points == 10:
+            SCREEN.fill("Black")
+            SCREEN.blit(victory_surface_out, victory_surface_out.get_rect(center=SCREEN.get_rect().center))
+            if timer < 0:
+                main_menu(lang)
 
         pygame.display.update()
         dt = clock.tick(30) / 1000
