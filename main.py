@@ -27,60 +27,49 @@ def game(mode, lang):
 
     if mode == 3 and lang == 1:
         file = open("words/polish_hard.txt", encoding="utf-8").read().splitlines()
-        stat_file = open("statistics/polish_hard.txt", encoding="utf-8")
-        stat_read = stat_file.read().splitlines()
+        stat_file = open("statistics/polish_hard.txt", encoding="utf-8").read().splitlines()
         statistics = []
-        for line in stat_read:
+        for line in stat_file:
             statistics.append(int(line))
-        stat_file.close()
         stat_file = open("statistics/polish_hard.txt", mode="w", encoding="utf-8")
     elif mode == 2 and lang == 1:
         file = open("words/polish_medium.txt", encoding="utf-8").read().splitlines()
-        stat_file = open("statistics/polish_medium.txt", encoding="utf-8")
-        stat_read = stat_file.read().splitlines()
+        stat_file = open("statistics/polish_medium.txt", encoding="utf-8").read().splitlines()
         statistics = []
-        for line in stat_read:
+        for line in stat_file:
             statistics.append(int(line))
-        stat_file.close()
         stat_file = open("statistics/polish_medium.txt", mode="w", encoding="utf-8")
     elif mode == 1 and lang == 1:
         file = open("words/polish_easy.txt", encoding="utf-8").read().splitlines()
-        stat_file = open("statistics/polish_easy.txt", encoding="utf-8")
-        stat_read = stat_file.read().splitlines()
+        stat_file = open("statistics/polish_easy.txt", encoding="utf-8").read().splitlines()
         statistics = []
-        for line in stat_read:
+        for line in stat_file:
             statistics.append(int(line))
-        stat_file.close()
         stat_file = open("statistics/polish_easy.txt", mode="w", encoding="utf-8")
     elif mode == 3 and lang == 2:
         file = open("words/english_hard.txt", encoding="utf-8").read().splitlines()
-        stat_file = open("statistics/english_hard.txt", encoding="utf-8")
-        stat_read = stat_file.read().splitlines()
+        stat_file = open("statistics/english_hard.txt", encoding="utf-8").read().splitlines()
         statistics = []
-        for line in stat_read:
+        for line in stat_file:
             statistics.append(int(line))
-        stat_file.close()
         stat_file = open("statistics/english_hard.txt", mode="w", encoding="utf-8")
     elif mode == 2 and lang == 2:
         file = open("words/english_medium.txt", encoding="utf-8").read().splitlines()
-        stat_file = open("statistics/english_medium.txt", encoding="utf-8")
-        stat_read = stat_file.read().splitlines()
+        stat_file = open("statistics/english_medium.txt", encoding="utf-8").read().splitlines()
         statistics = []
-        for line in stat_read:
+        for line in stat_file:
             statistics.append(int(line))
-        stat_file.close()
         stat_file = open("statistics/english_medium.txt", mode="w", encoding="utf-8")
     elif mode == 1 and lang == 2:
         file = open("words/english_easy.txt", encoding="utf-8").read().splitlines()
-        stat_file = open("statistics/english_easy.txt", encoding="utf-8")
-        stat_read = stat_file.read().splitlines()
+        stat_file = open("statistics/english_easy.txt", encoding="utf-8").read().splitlines()
         statistics = []
-        for line in stat_read:
+        for line in stat_file:
             statistics.append(int(line))
-        stat_file.close()
         stat_file = open("statistics/english_easy.txt", mode="w", encoding="utf-8")
 
     words = []
+    wins = []
     for line in file:
         words.append(line)
 
@@ -111,6 +100,7 @@ def game(mode, lang):
             if event.type == pygame.QUIT:
                 for line in statistics:
                     stat_file.write(str(line) + "\n")
+                stat_file.close()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN and timer < 0:
@@ -124,11 +114,43 @@ def game(mode, lang):
                 number = random.randrange(0, 24)
         if timer > 0:
             textinput.value = ''
-        if points == 10:
+        if points == 5:
             SCREEN.fill("Black")
             SCREEN.blit(victory_surface_out, victory_surface_out.get_rect(center=SCREEN.get_rect().center))
-            if timer < 0:
-                main_menu(lang)
+
+            wins_file = open("statistics/wins.txt", encoding="utf-8").read().splitlines()
+
+            for line in wins_file:
+                wins.append(int(line))
+
+            if mode == 3 and lang == 1:
+                wins[0] += 1
+            if mode == 2 and lang == 1:
+                wins[1] += 1
+            if mode == 1 and lang == 1:
+                wins[2] += 1
+            if mode == 3 and lang == 2:
+                wins[3] += 1
+            if mode == 2 and lang == 2:
+                wins[4] += 1
+            if mode == 1 and lang == 2:
+                wins[5] += 1
+
+            wins_file = open("statistics/wins.txt", mode="w", encoding="utf-8")
+            for line in wins:
+                wins_file.write(str(line) + "\n")
+            for line in statistics:
+                stat_file.write(str(line) + "\n")
+            wins_file.close()
+            stat_file.close()
+            timer = 5
+            while True:
+                timer -= dt
+                print(timer)
+                if timer < 0:
+                    main_menu(lang)
+                pygame.display.update()
+                dt = clock.tick(30) / 1000
 
         pygame.display.update()
         dt = clock.tick(30) / 1000
@@ -228,7 +250,7 @@ def options():
         pygame.display.update()
 
 
-def show_statistics(mode, lang):
+def show_errors_statistics(mode, lang):
     if mode == 3 and lang == 1:
         file = open("words/polish_hard.txt", encoding="utf-8").read().splitlines()
         stat_file = open("statistics/polish_hard.txt", encoding="utf-8").read().splitlines()
@@ -256,14 +278,53 @@ def show_statistics(mode, lang):
         STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(400, 50))
         SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
         for indx in range(0, len(file)//2):
-            SCREEN.blit(get_font(40).render(file[indx] + ": " + stat_file[indx], True, "white"), (125, 200 + 30 * indx))
+            SCREEN.blit(get_font(40).render(file[indx] + ": " + stat_file[indx], True, "white"), (125, 200 + 33 * indx))
         for indx in range(len(file)//2, len(file)):
-            SCREEN.blit(get_font(40).render(file[indx] + ": " + stat_file[indx], True, "white"), (425, 200 + 30 * (indx - len(file)//2)))
+            SCREEN.blit(get_font(40).render(file[indx] + ": " + stat_file[indx], True, "white"),
+                        (425, 200 + 33 * (indx - len(file)//2)))
 
         STATISTICS_BACK = Button(image=None, pos=(400, 750),
                                  text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
         STATISTICS_BACK.changeColor(STATISTICS_MOUSE_POS)
         STATISTICS_BACK.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if STATISTICS_BACK.checkForInput(STATISTICS_MOUSE_POS):
+                    if 'lang' in vars():
+                        menu_statistics(lang)
+                    else:
+                        menu_statistics(1)
+
+        pygame.display.update()
+
+
+def show_wins_statistics(lang):
+
+    wins_file = open("statistics/wins.txt", encoding="utf-8").read().splitlines()
+
+    while True:
+        STATISTICS_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(BG, (0, 0))
+        STATISTICS_TEXT = get_font(45).render("Liczba wygranych", True, "white")
+        STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(400, 50))
+        SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
+        SCREEN.blit(get_font(40).render("Polski trudny: " + wins_file[0], True, "white"), (250, 200))
+        SCREEN.blit(get_font(40).render("Polski średni: " + wins_file[1], True, "white"), (250, 233))
+        SCREEN.blit(get_font(40).render("Polski łatwy: " + wins_file[2], True, "white"), (250, 266))
+        SCREEN.blit(get_font(40).render("Angielski trudny: " + wins_file[3], True, "white"), (250, 299))
+        SCREEN.blit(get_font(40).render("Angielski średni: " + wins_file[4], True, "white"), (250, 332))
+        SCREEN.blit(get_font(40).render("Angielski łatwy: " + wins_file[5], True, "white"), (250, 365))
+
+        STATISTICS_BACK = Button(image=None, pos=(400, 750),
+                                     text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
+        STATISTICS_BACK.changeColor(STATISTICS_MOUSE_POS)
+        STATISTICS_BACK.update(SCREEN)
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -292,35 +353,78 @@ def menu_statistics(lang):
 
         STATISTICS_BACK = Button(image=None, pos=(400, 750),
                               text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
-        STATISTICS_HARD = Button(image=pygame.image.load("assets/button.png"), pos=(400, 200),
-                             text_input="TRUDNY", font=get_font(75), base_color="White", hovering_color="Green")
-        STATISTICS_MEDIUM = Button(image=pygame.image.load("assets/button.png"), pos=(400, 350),
-                             text_input="ŚREDNI", font=get_font(75), base_color="White", hovering_color="Green")
-        STATISTICS_EASY = Button(image=pygame.image.load("assets/button.png"), pos=(400, 500),
-                                 text_input="ŁATWY", font=get_font(75), base_color="White", hovering_color="Green")
+        STATISTICS_WINS = Button(image=pygame.image.load("assets/button.png"), pos=(400, 200),
+                             text_input="WYGRANE", font=get_font(75), base_color="White", hovering_color="Green")
+        STATISTICS_ERRORS = Button(image=pygame.image.load("assets/button.png"), pos=(400, 350),
+                             text_input="BŁĘDY", font=get_font(75), base_color="White", hovering_color="Green")
 
         STATISTICS_BACK.changeColor(STATISTICS_MOUSE_POS)
         STATISTICS_BACK.update(SCREEN)
-        STATISTICS_HARD.changeColor(STATISTICS_MOUSE_POS)
-        STATISTICS_HARD.update(SCREEN)
-        STATISTICS_MEDIUM.changeColor(STATISTICS_MOUSE_POS)
-        STATISTICS_MEDIUM.update(SCREEN)
-        STATISTICS_EASY.changeColor(STATISTICS_MOUSE_POS)
-        STATISTICS_EASY.update(SCREEN)
+        STATISTICS_WINS.changeColor(STATISTICS_MOUSE_POS)
+        STATISTICS_WINS.update(SCREEN)
+        STATISTICS_ERRORS.changeColor(STATISTICS_MOUSE_POS)
+        STATISTICS_ERRORS.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if STATISTICS_HARD.checkForInput(STATISTICS_MOUSE_POS):
-                    show_statistics(3, lang)
+                if STATISTICS_ERRORS.checkForInput(STATISTICS_MOUSE_POS):
+                    while True:
+                        STATISTICS_MOUSE_POS = pygame.mouse.get_pos()
+
+                        SCREEN.blit(BG, (0, 0))
+
+                        STATISTICS_TEXT = get_font(45).render("Statystyki", True, "white")
+                        STATISTICS_RECT = STATISTICS_TEXT.get_rect(center=(400, 50))
+                        SCREEN.blit(STATISTICS_TEXT, STATISTICS_RECT)
+
+                        STATISTICS_BACK = Button(image=None, pos=(400, 750),
+                                                 text_input="BACK", font=get_font(75), base_color="white",
+                                                 hovering_color="Green")
+                        STATISTICS_HARD = Button(image=pygame.image.load("assets/button.png"), pos=(400, 200),
+                                                 text_input="TRUDNY", font=get_font(75), base_color="White",
+                                                 hovering_color="Green")
+                        STATISTICS_MEDIUM = Button(image=pygame.image.load("assets/button.png"), pos=(400, 350),
+                                                   text_input="ŚREDNI", font=get_font(75), base_color="White",
+                                                   hovering_color="Green")
+                        STATISTICS_EASY = Button(image=pygame.image.load("assets/button.png"), pos=(400, 500),
+                                                   text_input="ŁATWY", font=get_font(75), base_color="White",
+                                                   hovering_color="Green")
+
+                        STATISTICS_BACK.changeColor(STATISTICS_MOUSE_POS)
+                        STATISTICS_BACK.update(SCREEN)
+                        STATISTICS_HARD.changeColor(STATISTICS_MOUSE_POS)
+                        STATISTICS_HARD.update(SCREEN)
+                        STATISTICS_MEDIUM.changeColor(STATISTICS_MOUSE_POS)
+                        STATISTICS_MEDIUM.update(SCREEN)
+                        STATISTICS_EASY.changeColor(STATISTICS_MOUSE_POS)
+                        STATISTICS_EASY.update(SCREEN)
+
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                sys.exit()
+                            if event.type == pygame.MOUSEBUTTONDOWN:
+                                if STATISTICS_HARD.checkForInput(STATISTICS_MOUSE_POS):
+                                    show_errors_statistics(3, lang)
+                            if event.type == pygame.MOUSEBUTTONDOWN:
+                                if STATISTICS_MEDIUM.checkForInput(STATISTICS_MOUSE_POS):
+                                    show_errors_statistics(2, lang)
+                            if event.type == pygame.MOUSEBUTTONDOWN:
+                                if STATISTICS_EASY.checkForInput(STATISTICS_MOUSE_POS):
+                                    show_errors_statistics(1, lang)
+                            if event.type == pygame.MOUSEBUTTONDOWN:
+                                if STATISTICS_BACK.checkForInput(STATISTICS_MOUSE_POS):
+                                    if 'lang' in vars():
+                                        main_menu(lang)
+                                    else:
+                                        main_menu(1)
+                        pygame.display.update()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if STATISTICS_MEDIUM.checkForInput(STATISTICS_MOUSE_POS):
-                    show_statistics(2, lang)
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if STATISTICS_EASY.checkForInput(STATISTICS_MOUSE_POS):
-                    show_statistics(1, lang)
+                if STATISTICS_WINS.checkForInput(STATISTICS_MOUSE_POS):
+                    show_wins_statistics(lang)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if STATISTICS_BACK.checkForInput(STATISTICS_MOUSE_POS):
                     if 'lang' in vars():
