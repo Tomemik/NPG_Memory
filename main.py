@@ -251,6 +251,7 @@ def options():
 
 
 def show_errors_statistics(mode, lang):
+
     if mode == 3 and lang == 1:
         file = open("words/polish_hard.txt", encoding="utf-8").read().splitlines()
         stat_file = open("statistics/polish_hard.txt", encoding="utf-8").read().splitlines()
